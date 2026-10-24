@@ -1,0 +1,8 @@
+node_modules/
+dist/
+spacetimedb/node_modules/
+spacetimedb/dist/
+.DS_Store
+*.log
+.env
+.env.*

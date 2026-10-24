@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Birdie Blitz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- Title: choose how to play -->
+  <section id="menu" class="screen show">
+    <div class="logo">
+      <span class="logo-top">BIRDIE</span>
+      <span class="logo-bottom">BLITZ</span>
+      <span class="logo-shuttle">🏸</span>
+    </div>
+    <div class="menu-row">
+      <div class="card side-card">
+        <label class="field"><span>Your name</span><input id="nameInput" maxlength="16" autocomplete="off" /></label>
+        <div class="seg" id="levelSeg" role="radiogroup" aria-label="CPU difficulty">
+          <button data-level="0">Easy</button>
+          <button data-level="1" class="on">Normal</button>
+          <button data-level="2">Pro</button>
+        </div>
+        <button class="big-btn primary" id="btnAI">🤖 Play vs CPU</button>
+      </div>
+      <div class="card side-card">
+        <h3 class="card-title">2 players · 2 laptops</h3>
+        <button class="big-btn pink" id="btnCreate">👥 Create 1v1 match</button>
+        <div class="join-row">
+          <input id="joinInput" maxlength="4" placeholder="CODE" autocomplete="off" aria-label="Match code" />
+          <button class="big-btn" id="btnJoin">Join</button>
+        </div>
+        <button class="big-btn" id="btnQuick">⚡ Quick match</button>
+        <p class="hint" id="queueHint"></p>
+      </div>
+      <div class="card side-card hof">
+        <h3 class="card-title">🔴 Live now</h3>
+        <ul class="live" id="liveList"><li class="hint">No matches being played</li></ul>
+        <h3 class="card-title">🏆 Hall of fame</h3>
+        <ol id="hofList"><li class="hint">No matches yet</li></ol>
+      </div>
+    </div>
+    <p class="hint-keys">Keyboard: Space clear/drive · X smash · C lift · Z drop · ← → aim · 1 2 3 secret moves · Q W E read · S report · P pause</p>
+    <p class="conn" id="connStatus"></p>
+  </section>
+
+  <!-- Lobby: pair phone, wait for opponent, ready up -->
+  <section id="lobby" class="screen">
+    <div class="menu-row">
+      <div class="card pair-card">
+        <div class="qr" id="qr"><span class="hint">Loading…</span></div>
+        <div class="pair-steps">
+          <h3>Your phone is the racket</h3>
+          <ol>
+            <li>Scan the code with your phone camera</li>
+            <li>Allow motion &amp; calibrate (20 s)</li>
+            <li>Or skip it and play with the keyboard</li>
+          </ol>
+          <div class="status wait" id="phoneStatus"><i></i><span>Waiting for phone…</span></div>
+          <div class="url" id="phoneUrl"></div>
+        </div>
+      </div>
+      <div class="card side-card">
+        <div class="room-code">Match <b id="matchCode">····</b></div>
+        <div class="players" id="lobbyPlayers"></div>
+        <label class="opt"><input type="checkbox" id="optFog" /> <span><b>🌫 Fog of war</b> — now and then, for 1–2 rallies, you only see the shuttle once it crosses the net <i id="optFogNote"></i></span></label>
+        <label class="opt"><input type="checkbox" id="optScout" /> <span><b>🔍 Scouting report</b> — a live, private report on your opponent's weaknesses (they won't know)</span></label>
+        <div class="invite" id="inviteBox">
+          <span class="hint">Send this to player 2:</span>
+          <div class="url" id="inviteUrl"></div>
+          <button class="small-btn" id="btnCopy">Copy invite link</button>
+        </div>
+        <button class="big-btn primary" id="btnReady">✋ Ready</button>
+        <button class="small-btn" id="btnLeaveLobby">Leave</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pause -->
+  <section id="pause" class="screen">
+    <h2 class="title-xl">PAUSED</h2>
+    <p class="pause-reason" id="pauseReason"></p>
+    <button class="big-btn primary" id="btnResume">▶ Resume</button>
+    <button class="big-btn" id="btnMenu">⌂ Leave match</button>
+  </section>
+
+  <!-- Results -->
+  <section id="results" class="screen">
+    <h2 class="title-xl" id="resultTitle">YOU WIN!</h2>
+    <div class="final-score" id="resultScore">11 – 7</div>
+    <table class="stats card" id="statsTable"></table>
+    <div class="result-btns">
+      <button class="big-btn" id="btnReplay">🎬 Replay last rally</button>
+      <button class="big-btn primary" id="btnAgain">↻ Rematch</button>
+      <button class="big-btn" id="btnMenu2">⌂ Main Menu</button>
+    </div>
+  </section>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="board">
+      <div class="side you"><i class="serve-dot" id="dotYou"></i><label id="lblYou">YOU</label><b id="sYou">0</b></div>
+      <span class="vs">–</span>
+      <div class="side cpu"><b id="sCpu">0</b><label id="lblCpu">CPU</label><i class="serve-dot" id="dotCpu"></i></div>
+    </div>
+    <div class="chips-right">
+      <div class="chip level" id="sLevel">NORMAL</div>
+      <div class="chip" id="oppCondition">Opponent: fresh</div>
+      <div class="chip fog-chip hidden" id="fogChip">🌫 FOG</div>
+      <button class="small-btn hidden" id="btnStopWatch">✕ Stop watching</button>
+    </div>
+    <div class="me-panel">
+      <div class="stamina"><span>Stamina</span><div class="bar"><i id="staminaBar"></i></div></div>
+      <div class="secrets" id="secretCard">
+        <button data-move="power"><b>1</b> Power</button>
+        <button data-move="curve"><b>2</b> Curve</button>
+        <button data-move="feint"><b>3</b> Feint</button>
+      </div>
+      <div class="secrets reads" id="readCard" title="Guess the opponent's next shot — right = sharper next swing, wrong = −5 stamina">
+        <button data-read="drop"><b>Q</b> Drop?</button>
+        <button data-read="clear"><b>W</b> Clear?</button>
+        <button data-read="smash"><b>E</b> Smash?</button>
+      </div>
+      <button class="scout-btn hidden" id="btnScout"><b>S</b> 🔍 Scouting report</button>
+    </div>
+    <div class="scout-panel hidden" id="scoutPanel">
+      <div class="scout-head"><b>🔍 Scouting report</b><span>only you can see this</span><button id="btnScoutClose" aria-label="Close report">✕</button></div>
+      <div id="scoutLines"></div>
+    </div>
+    <div class="status phone-chip chip" id="inputChip"><i></i><span>Keyboard</span></div>
+    <button class="pause-btn" id="pauseBtn" aria-label="Pause">❚❚</button>
+    <div id="callout"></div>
+    <div id="subcallout"></div>
+    <div id="countdown"></div>
+  </div>
+
+  <!-- Match over: stays on the court until you choose -->
+  <div id="endBar" class="replay-bar end-bar hidden">
+    <span class="end-title" id="endTitle"></span>
+    <span class="end-score" id="endScore"></span>
+    <button class="small-btn" id="btnEndResults">📊 Results</button>
+    <button class="small-btn" id="btnEndReplay">🎬 Replay</button>
+    <button class="small-btn" id="btnEndRematch">↻ Rematch</button>
+    <button class="small-btn" id="btnEndMenu">⌂ Menu</button>
+  </div>
+
+  <!-- Replay controls: stays until you close it -->
+  <div id="replayBar" class="replay-bar hidden">
+    <span class="replay-tag">🎬 REPLAY</span>
+    <span class="replay-info" id="replayInfo"></span>
+    <button class="small-btn" id="btnReplayAgain">↻ Again</button>
+    <button class="small-btn" id="btnReplayBest">⭐ Best rally</button>
+    <button class="small-btn" id="btnReplaySpeed">½×</button>
+    <button class="small-btn" id="btnReplayClose">✕ Close</button>
+  </div>
+  <div id="replayShot" class="replay-shot"></div>
+  <div id="toast"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

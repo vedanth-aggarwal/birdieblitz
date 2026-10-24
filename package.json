@@ -1,0 +1,26 @@
+{
+  "name": "birdie-blitz-spacetime",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Badminton on your laptop, swung with your phone \u2014 1v1 or vs CPU, refereed by SpacetimeDB.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "db:publish": "spacetime publish birdie-blitz --module-path spacetimedb --server local --yes",
+    "db:reset": "spacetime publish birdie-blitz --module-path spacetimedb --server local --yes --delete-data=always",
+    "db:generate": "spacetime generate --lang typescript --out-dir src/module_bindings --module-path spacetimedb",
+    "db:cloud": "spacetime publish birdie-blitz --module-path spacetimedb --server maincloud --yes",
+    "dev:hmr": "BB_HMR=1 vite --host"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "spacetimedb": "2.12.*",
+    "three": "0.160.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.6.2",
+    "vite": "^7.1.5"
+  }
+}

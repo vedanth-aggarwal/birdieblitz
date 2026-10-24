@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#05060d" />
+  <title>Birdie Blitz Controller</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body class="phone">
+  <main class="phone-wrap">
+
+    <!-- 1. Connect -->
+    <section class="step" id="s-connect">
+      <div class="logo"><span class="logo-top">BIRDIE</span><span class="logo-bottom">BLITZ</span></div>
+      <div class="card step">
+        <div class="illus">📱</div>
+        <h2 id="connTitle">Connecting…</h2>
+        <p id="connText">Pairing your phone with the match on SpacetimeDB.</p>
+      </div>
+    </section>
+
+    <!-- 2. Motion permission -->
+    <section class="step hidden" id="s-motion">
+      <div class="card step">
+        <div class="illus">🏸</div>
+        <h2>Your phone is the racket</h2>
+        <p>Allow motion sensors so the game can feel your swings.</p>
+        <button class="big-btn primary" id="btnMotion">Enable motion</button>
+        <p id="motionErr" class="err hidden"></p>
+        <button class="small-btn" id="btnTapMode">No sensors? Use tap mode</button>
+      </div>
+    </section>
+
+    <!-- 3. Center -->
+    <section class="step hidden" id="s-center">
+      <div class="card step">
+        <div class="illus">🎯</div>
+        <h2>Set your center</h2>
+        <p>Hold the phone like a racket handle, <b>top of the phone pointing at the laptop</b>. Then tap the button.</p>
+        <button class="big-btn primary" id="btnCenter">Set center</button>
+        <button class="small-btn hidden" id="btnUseSaved">Use saved swing strength</button>
+      </div>
+    </section>
+
+    <!-- 4/5. Swing calibration -->
+    <section class="step hidden" id="s-swing">
+      <div class="card step">
+        <div class="illus swing">🏸</div>
+        <h2 id="swingTitle">3 gentle swings</h2>
+        <p id="swingText">Hold tight! Swing softly, like a drop shot.</p>
+        <div class="dots" id="swingDots"><i></i><i></i><i></i></div>
+        <div class="meter"><i id="calMeter"></i></div>
+      </div>
+    </section>
+
+    <!-- 6. Play -->
+    <section class="play hidden" id="s-play">
+      <div class="play-top">
+        <div class="mini-score" id="pScore">0 – 0</div>
+        <button class="small-btn" id="btnRecal">Recalibrate</button>
+      </div>
+      <div class="prompt" id="pPrompt">Swing to play!</div>
+      <div class="swing-pad" id="pad">
+        <div class="racket">🏸</div>
+        <div class="last" id="pLast"></div>
+        <div class="grade" id="pGrade"></div>
+        <div class="grade" id="pGesture"></div>
+        <div class="tap-hint" id="tapHint">Swing your phone — or tap here (higher = harder)</div>
+      </div>
+      <div class="aim-bar"><i id="aimDot"></i></div>
+      <div class="meter"><i id="playMeter"></i></div>
+      <div class="stamina phone-stamina"><span>Stamina</span><div class="bar"><i id="pStamina"></i></div></div>
+      <div class="secrets" id="pSecrets">
+        <button data-move="power" disabled>💥 Power</button>
+        <button data-move="curve" disabled>🌀 Curve</button>
+        <button data-move="feint" disabled>🎭 Feint</button>
+      </div>
+      <div class="secrets reads" id="pReads">
+        <button data-read="drop" disabled>🔮 Drop?</button>
+        <button data-read="clear" disabled>🔮 Clear?</button>
+        <button data-read="smash" disabled>🔮 Smash?</button>
+      </div>
+      <div class="moves"><span><b>↓ Chop</b> smash</span><span><b>↑ Up</b> lift</span><span><b>→ Flick</b> clear</span><span><b>↻ Twist</b> drop</span></div>
+    </section>
+
+  </main>
+  <script type="module" src="/src/phone.js"></script>
+</body>
+</html>
